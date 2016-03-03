@@ -1,13 +1,19 @@
 body {
         text-align: center;
-        background-color: green;
-}
-
-#video {
-        
+        background-color: #78ee80;
 }
 
 #lyrics {
         font-family: "Helvetica";
-        font-size: 20;
+        font-size: 30px;
+}
+
+#jen_law {
+        height: 7.5%;
+        width: 7.5%;
+}
+
+#sun_emoji {
+        height: 10%;
+        width: 10%;
 }
