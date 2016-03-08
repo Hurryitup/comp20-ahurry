@@ -1,1 +1,48 @@
-/* Your CSS here... */
+body {
+        padding: 0;
+        margin: 0;
+        background-color: #DEE0E3;
+}
+
+h1 {
+        padding: 0;
+        margin: 0;
+        text-align: center;
+        background-color: #DEE0E3;
+        border-radius: 20%;
+}
+
+h2 {
+        text-align: center;
+}
+
+.message {
+        background-color: #6EF088;
+        display: inline-block;
+        position:relative;
+        padding:15px;
+        margin:1em 0 3em;
+        border-radius:10px;
+        margin-left:50px;
+}
+
+.message:after{
+        content:"";
+        position:absolute;
+        bottom:-15px; /* value = - border-top-width - border-bottom-width */
+        left:50px; /* controls horizontal position */
+        border-width:15px 15px 0; /* vary these values to change the angle of the vertex */
+        border-style:solid;
+        border-color:#6EF088 transparent;
+        /* reduce the damage in FF3.0 */
+        display:block;
+        width:0;        
+}
+
+
+.sender {
+        background-color: #6EA4F0;
+        display: inline-block;
+        border-radius: 20%;
+        text-align: left;
+}
