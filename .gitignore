@@ -1,0 +1,4 @@
+# ignore all temp files created by emacs
+*.*~
+# ignore DSStores
+.DS_Store
