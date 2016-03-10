@@ -19,4 +19,3 @@ function parseData(data){
         }
         messages_div.innerHTML += "<hr/>"
 }
-// console.log(response);
