@@ -13,10 +13,10 @@ function parse() {
 function parseData(data){
         var messages_div = document.getElementById("messages");
         for (message in data) {
-                messages_div.innerHTML += "<h2>"+data[message]["username"]+"</h2>"
-                messages_div.innerHTML += "<p class='message'>"+data[message]["content"]+"\n</p>"
-                messages_div.innerHTML += "<p></p>"
-                messages_div.innerHTML += "<p class='sender'>"+data[message]["username"]+"\n</p>"
+                content = "<div class='message_super'><div class='ms2'><hr/><p class='message'>"+data[message]["content"]+"</p></div>";
+                content += "<p class='sender'>"+data[message]["username"]+"</p></div>";
+                messages_div.innerHTML += content;
         }
+        messages_div.innerHTML += "<hr/>"
 }
 // console.log(response);

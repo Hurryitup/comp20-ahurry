@@ -16,12 +16,22 @@ h2 {
         text-align: center;
 }
 
+.message_super {
+        text-align: center;
+        vertical-align: middle;
+}
+
+.ms2 {
+        padding-bottom: 0px;
+}
+
 .message {
+        text-align: center;
         background-color: #6EF088;
         display: inline-block;
         position:relative;
         padding:15px;
-        margin:1em 0 3em;
+        margin:1em 0 1em;
         border-radius:10px;
         margin-left:50px;
 }
@@ -29,8 +39,8 @@ h2 {
 .message:after{
         content:"";
         position:absolute;
-        bottom:-15px; /* value = - border-top-width - border-bottom-width */
-        left:50px; /* controls horizontal position */
+        bottom:-15px;  value = - border-top-width - border-bottom-width 
+        right:50px; /* controls horizontal position */
         border-width:15px 15px 0; /* vary these values to change the angle of the vertex */
         border-style:solid;
         border-color:#6EF088 transparent;
@@ -41,8 +51,10 @@ h2 {
 
 
 .sender {
-        background-color: #6EA4F0;
         display: inline-block;
         border-radius: 20%;
         text-align: left;
+        color: black;
+        margin-right: 120px;
+        font-size: 20px;
 }
