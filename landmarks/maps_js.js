@@ -51,10 +51,7 @@ function setMarkers(data, category) {
                         map: def_map,
                         icon: image
                 });
-                // Open info window on click of marker
                 marker.addListener("click", openInfo);
-                        // infowindow.setContent(marker.title);
-                        // infowindow.open(def_map, marker);
         }
 }
 
@@ -101,14 +98,6 @@ function getMyLocation() {
 }
 
 function renderMap() {
-        console.log("in renderMap - mylat:"+myLat+" myLng:"+myLng);
-        
         me = new google.maps.LatLng(myLat, myLng);
-        
-        // Update map and go there...
         def_map.panTo(me);
-
-        
 }
-
-
