@@ -1,6 +1,6 @@
 // TODO: change back to 0 0 when back on campus
 var myLat = 42.4039095;
-var myLng = -71.12095409999999;
+var myLng = -71.22095409999999;
 var xmlRequest = new XMLHttpRequest();
 var request_url = "https://defense-in-derpth.herokuapp.com/sendLocation"
 var me = {lat: myLat, lng: myLng};
@@ -13,10 +13,31 @@ var def_map;
 var infowindow = new google.maps.InfoWindow();
 var landmark_icon = "images/landmark.png";
 var person_icon = "images/person.png";
+var haversine_distance;
+var closest_landmark;
 
 function openInfo() {
-        infowindow.setContent(this.title);
+        infowindow.setContent(this.label);
         infowindow.open(def_map, this);
+}
+
+function calc_distance (lat, lng){
+        Number.prototype.toRad = function() {
+                return this * Math.PI / 180;
+        }
+
+        var R = 6371; // km 
+        //has a problem with the .toRad() method below.
+        var x1 = lat-myLat;
+        var dLat = x1.toRad();  
+        var x2 = lng-myLng;
+        var dLon = x2.toRad();  
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
+                        Math.cos(myLat.toRad()) * Math.cos(lat.toRad()) * 
+                        Math.sin(dLon/2) * Math.sin(dLon/2);  
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        var d = R * c; 
+        return d;
 }
 
 function setMarkers(data, category) {
@@ -24,6 +45,7 @@ function setMarkers(data, category) {
                 var image;
                 var name;
                 var pos;
+                var landmark_label = "";
                 if (category == "landmarks") {
                         image = {
                                 url: landmark_icon,
@@ -33,6 +55,7 @@ function setMarkers(data, category) {
                         };
                         name = data[i].properties.Location_Name;
                         pos = new google.maps.LatLng(data[i].geometry.coordinates[1], data[i].geometry.coordinates[0]);
+                        landmark_label = data[i].properties.Details;
                 }
                 else if (category == "people") {
                         image = {
@@ -43,14 +66,28 @@ function setMarkers(data, category) {
                         }
                         name = data[i].login;
                         pos = new google.maps.LatLng(data[i].lat, data[i].lng);
-                        console.log("parsing people");
                 }
                 var marker = new google.maps.Marker({
                         position: pos,
                         title: name,
                         map: def_map,
-                        icon: image
+                        icon: image,
                 });
+                if (category == "landmarks") {
+                        marker.setLabel(landmark_label);
+                        curr_distance = calc_distance(pos.lat(), pos.lng());
+                        console.log(curr_distance);
+                        if (i == 0) haversine_distance = curr_distance;
+                        if (curr_distance < haversine_distance){
+                                haversine_distance = curr_distance;
+                                closest_landmark = marker.title;
+                        }
+                }
+                else if (marker.title != "LUCINDA_BOYER")
+                        marker.setLabel(marker.title);
+                else 
+                        marker.setLabel("<b>Name:</b> LUCINDA_BOYER and the closest landmark is <b>"+closest_landmark+"</b> and it is <b>"+haversine_distance+"</b> kilometers away");
+
                 marker.addListener("click", openInfo);
         }
 }
