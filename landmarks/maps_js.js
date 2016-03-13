@@ -87,7 +87,7 @@ function setMarkers(data, category) {
                 if (category == "landmarks") {
                         marker.setLabel(landmark_label);
                         curr_distance = calc_distance(pos.lat(), pos.lng());
-                        if (i == 0) {me.nearest_landmark.distance = curr_distance;}
+                        if (i == 0) {me.nearest_landmark.distance = curr_distance;}0
                         if (curr_distance <= me.nearest_landmark.distance){
                                 me.nearest_landmark.distance = curr_distance;
                                 me.nearest_landmark.name = marker.title;
