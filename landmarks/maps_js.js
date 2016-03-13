@@ -1,6 +1,6 @@
 // TODO: change back to 0 0 when back on campus
 var myLat = 42.4039095;
-var myLng = -71.22095409999999;
+var myLng = -71.12095409999999;
 var xmlRequest = new XMLHttpRequest();
 var request_url = "https://defense-in-derpth.herokuapp.com/sendLocation"
 var me = {lat: myLat, lng: myLng};
@@ -76,9 +76,8 @@ function setMarkers(data, category) {
                 if (category == "landmarks") {
                         marker.setLabel(landmark_label);
                         curr_distance = calc_distance(pos.lat(), pos.lng());
-                        console.log(curr_distance);
-                        if (i == 0) haversine_distance = curr_distance;
-                        if (curr_distance < haversine_distance){
+                        if (i == 0) {haversine_distance = curr_distance;}
+                        if (curr_distance <= haversine_distance){
                                 haversine_distance = curr_distance;
                                 closest_landmark = marker.title;
                         }
@@ -86,7 +85,7 @@ function setMarkers(data, category) {
                 else if (marker.title != "LUCINDA_BOYER")
                         marker.setLabel(marker.title);
                 else 
-                        marker.setLabel("<b>Name:</b> LUCINDA_BOYER and the closest landmark is <b>"+closest_landmark+"</b> and it is <b>"+haversine_distance+"</b> kilometers away");
+                        marker.setLabel("<b>Name:</b> LUCINDA_BOYER, and the closest landmark is <b>"+closest_landmark+"</b> and it is <b>"+haversine_distance+"</b> kilometers away");
 
                 marker.addListener("click", openInfo);
         }
@@ -104,9 +103,9 @@ function parse_data(data) {
 
 function init(){
         def_map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        // Uncomment when back on campus
         // getMyLocation();
         renderMap();
-        console.log("mylat:"+myLat+" myLng:"+myLng);
         var params = "login=LUCINDA_BOYER&lat="+myLat+"&lng="+myLng;
         xmlRequest.open("POST", request_url, true);
         xmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
