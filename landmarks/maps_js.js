@@ -1,24 +1,36 @@
-// TODO: change back to 0 0 when back on campus
-var myLat = 42.4039095;
-var myLng = -71.12095409999999;
-var xmlRequest = new XMLHttpRequest();
-var request_url = "https://defense-in-derpth.herokuapp.com/sendLocation"
-var me = {lat: myLat, lng: myLng};
-var mapOptions = {
-        zoom: 13,
-        center: me,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-};
-var def_map;
-var infowindow = new google.maps.InfoWindow();
 var landmark_icon = "images/landmark.png";
 var person_icon = "images/person.png";
-var haversine_distance;
-var closest_landmark;
+var request_url = "https://defense-in-derpth.herokuapp.com/sendLocation";
+var me = {
+        name:"LUCINDA_BOYER",
+        lat: 42.40956279044471,
+        lng: -71.1228571594042,
+        nearest_landmark: {name:"", lat: 0, lng: 0, distance:0}
+};
+var xmlRequest = new XMLHttpRequest();
+var gmap;
+var infowindow = new google.maps.InfoWindow();
+var mapOptions = {
+        zoom: 20,
+        center: {lat: me.lat, lng: me.lng},
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+};
 
 function openInfo() {
         infowindow.setContent(this.label);
-        infowindow.open(def_map, this);
+        infowindow.open(gmap, this);
+        if (this.title == "LUCINDA_BOYER") {
+                polyLine = new google.maps.Polyline({
+                        path: [
+                        this.position,
+                        {lat:me.nearest_landmark.lat, lng:me.nearest_landmark.lng}],
+                        geodesic: true,
+                        strokeColor: "#FF0000",
+                        strokeOpacity: 1.0,
+                        strokeWeight: 2,
+                });
+                polyLine.setMap(gmap);
+        }
 }
 
 function calc_distance (lat, lng){
@@ -27,13 +39,12 @@ function calc_distance (lat, lng){
         }
 
         var R = 6371; // km 
-        //has a problem with the .toRad() method below.
-        var x1 = lat-myLat;
+        var x1 = lat-me.lat;
         var dLat = x1.toRad();  
-        var x2 = lng-myLng;
+        var x2 = lng-me.lng;
         var dLon = x2.toRad();  
         var a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
-                        Math.cos(myLat.toRad()) * Math.cos(lat.toRad()) * 
+                        Math.cos(me.lat.toRad()) * Math.cos(lat.toRad()) * 
                         Math.sin(dLon/2) * Math.sin(dLon/2);  
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
         var d = R * c; 
@@ -51,7 +62,7 @@ function setMarkers(data, category) {
                                 url: landmark_icon,
                                 size: new google.maps.Size(91,90),
                                 origin: new google.maps.Point(0,0),
-                                anchor: new google.maps.Point(27, 55)
+                                anchor: new google.maps.Point(26, 53)
                         };
                         name = data[i].properties.Location_Name;
                         pos = new google.maps.LatLng(data[i].geometry.coordinates[1], data[i].geometry.coordinates[0]);
@@ -62,7 +73,7 @@ function setMarkers(data, category) {
                                 url: person_icon,
                                 size: new google.maps.Size(53, 38),
                                 origin: new google.maps.Point(0,0),
-                                anchor: new google.maps.Point(19, 53)
+                                anchor: new google.maps.Point(19, 30)
                         }
                         name = data[i].login;
                         pos = new google.maps.LatLng(data[i].lat, data[i].lng);
@@ -70,23 +81,25 @@ function setMarkers(data, category) {
                 var marker = new google.maps.Marker({
                         position: pos,
                         title: name,
-                        map: def_map,
+                        map: gmap,
                         icon: image,
                 });
                 if (category == "landmarks") {
                         marker.setLabel(landmark_label);
                         curr_distance = calc_distance(pos.lat(), pos.lng());
-                        if (i == 0) {haversine_distance = curr_distance;}
-                        if (curr_distance <= haversine_distance){
-                                haversine_distance = curr_distance;
-                                closest_landmark = marker.title;
+                        if (i == 0) {me.nearest_landmark.distance = curr_distance;}
+                        if (curr_distance <= me.nearest_landmark.distance){
+                                me.nearest_landmark.distance = curr_distance;
+                                me.nearest_landmark.name = marker.title;
+                                me.nearest_landmark.lat = pos.lat();
+                                me.nearest_landmark.lng = pos.lng();
                         }
                 }
                 else if (marker.title != "LUCINDA_BOYER")
                         marker.setLabel(marker.title);
-                else 
-                        marker.setLabel("<b>Name:</b> LUCINDA_BOYER, and the closest landmark is <b>"+closest_landmark+"</b> and it is <b>"+haversine_distance+"</b> kilometers away");
-
+                else {
+                        marker.setLabel("<b>Name: LUCINDA_BOYER</b>, and the closest landmark is <b>"+me.nearest_landmark.name+"</b> and it is <b>"+(Math.round(me.nearest_landmark.distance*100))/100+"</b> kilometers away");
+                }
                 marker.addListener("click", openInfo);
         }
 }
@@ -102,11 +115,10 @@ function parse_data(data) {
 }
 
 function init(){
-        def_map = new google.maps.Map(document.getElementById("map"), mapOptions);
-        // Uncomment when back on campus
-        // getMyLocation();
+        gmap = new google.maps.Map(document.getElementById("map"), mapOptions);
+        getMyLocation();
         renderMap();
-        var params = "login=LUCINDA_BOYER&lat="+myLat+"&lng="+myLng;
+        var params = "login="+me.name+"&lat="+me.lat+"&lng="+me.lng;
         xmlRequest.open("POST", request_url, true);
         xmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xmlRequest.setRequestHeader("Content-length", params.length);
@@ -119,8 +131,8 @@ function getMyLocation() {
         if (navigator.geolocation) { // the navigator.geolocation object is supported on your browser
 
                 navigator.geolocation.getCurrentPosition(function(position) {
-                                myLat = position.coords.latitude;
-                                myLng = position.coords.longitude;
+                                me.lat = position.coords.latitude;
+                                me.lng = position.coords.longitude;
                                 renderMap();
                         },
                         function(errPos) {
@@ -134,6 +146,5 @@ function getMyLocation() {
 }
 
 function renderMap() {
-        me = new google.maps.LatLng(myLat, myLng);
-        def_map.panTo(me);
+        gmap.panTo({lat: me.lat, lng:me.lng});
 }
