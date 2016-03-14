@@ -3,8 +3,8 @@ var person_icon = "images/person.png";
 var request_url = "https://defense-in-derpth.herokuapp.com/sendLocation";
 var me = {
         name:"LUCINDA_BOYER",
-        lat: 42.40956279044471,
-        lng: -71.1228571594042,
+        lat: 0,
+        lng: 0,
         nearest_landmark: {name:"", lat: 0, lng: 0, distance:0}
 };
 var xmlRequest = new XMLHttpRequest();
@@ -87,7 +87,7 @@ function setMarkers(data, category) {
                 if (category == "landmarks") {
                         marker.setLabel(landmark_label);
                         curr_distance = calc_distance(pos.lat(), pos.lng());
-                        if (i == 0) {me.nearest_landmark.distance = curr_distance;}0
+                        if (i == 0) {me.nearest_landmark.distance = curr_distance;}
                         if (curr_distance <= me.nearest_landmark.distance){
                                 me.nearest_landmark.distance = curr_distance;
                                 me.nearest_landmark.name = marker.title;
@@ -114,10 +114,7 @@ function parse_data(data) {
         }
 }
 
-function init(){
-        gmap = new google.maps.Map(document.getElementById("map"), mapOptions);
-        getMyLocation();
-        renderMap();
+function sendRequest() {
         var params = "login="+me.name+"&lat="+me.lat+"&lng="+me.lng;
         xmlRequest.open("POST", request_url, true);
         xmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -125,6 +122,11 @@ function init(){
         xmlRequest.setRequestHeader("Connection", "close");
         xmlRequest.onreadystatechange = parse_data;
         xmlRequest.send(params);
+}
+
+function init(){
+        gmap = new google.maps.Map(document.getElementById("map"), mapOptions);
+        getMyLocation();
 }
 
 function getMyLocation() {
@@ -147,4 +149,5 @@ function getMyLocation() {
 
 function renderMap() {
         gmap.panTo({lat: me.lat, lng:me.lng});
+        sendRequest();
 }
