@@ -95,7 +95,7 @@ function setMarkers(data, category) {
                                 me.nearest_landmark.lng = pos.lng();
                         }
                 }
-                else if (marker.title != "LUCINDA_BOYER")
+                else if (marker.title != me.name)
                         marker.setLabel(marker.title);
                 else {
                         marker.setLabel("<b>Name: LUCINDA_BOYER</b>, and the closest landmark is <b>"+me.nearest_landmark.name+"</b> and it is <b>"+(Math.round(me.nearest_landmark.distance*100))/100+"</b> kilometers away");
