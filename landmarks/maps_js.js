@@ -1,11 +1,15 @@
 var landmark_icon = "images/landmark.png";
 var person_icon = "images/person.png";
+var me_icon = "images/me_icon.png";
 var request_url = "https://defense-in-derpth.herokuapp.com/sendLocation";
 var me = {
         name:"LUCINDA_BOYER",
         lat: 0,
         lng: 0,
-        nearest_landmark: {name:"", lat: 0, lng: 0, distance:0}
+        nearest_landmark: {name:"", lat: 0, lng: 0, distance:0},
+        image: {
+                url: me_icon,
+        }
 };
 var xmlRequest = new XMLHttpRequest();
 var gmap;
@@ -99,6 +103,7 @@ function setMarkers(data, category) {
                         marker.setLabel(marker.title);
                 else {
                         marker.setLabel("<b>Name: LUCINDA_BOYER</b>, and the closest landmark is <b>"+me.nearest_landmark.name+"</b> and it is <b>"+(Math.round(me.nearest_landmark.distance*100))/100+"</b> kilometers away");
+                        marker.setIcon(me.image);
                 }
                 marker.addListener("click", openInfo);
         }
