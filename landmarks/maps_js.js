@@ -1,7 +1,7 @@
 var landmark_icon = "images/landmark.png";
 var person_icon = "images/person.png";
 var me_icon = "images/me_icon.png";
-var request_url = "https://defense-in-derpth.herokuapp.com/sendLocation";
+var request_url = "https://aqueous-wildwood-79601.herokuapp.com/sendLocation";
 var me = {
         name:"LUCINDA_BOYER",
         lat: 0,
@@ -123,8 +123,6 @@ function sendRequest() {
         var params = "login="+me.name+"&lat="+me.lat+"&lng="+me.lng;
         xmlRequest.open("POST", request_url, true);
         xmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xmlRequest.setRequestHeader("Content-length", params.length);
-        xmlRequest.setRequestHeader("Connection", "close");
         xmlRequest.onreadystatechange = parse_data;
         xmlRequest.send(params);
 }
