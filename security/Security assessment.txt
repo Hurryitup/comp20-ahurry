@@ -1,0 +1,42 @@
+Security assessment
+
+1. XSS
+- Location:
+        ...com/sendLocation
+- Severity: *****
+        It completely messes up the front end of the website, firstly. Secondly,
+        the mongo database now has this bad info in it, which is harder to fix.
+- How did I find it?
+        Sending the following curl request:
+        curl --data "login=<script>document.body.style.backgroundColor='red';document.body.innerHTML='<h1>HACKED</h1>';</script>&lat=0&lng=0" https://vast-basin-33477.herokuapp.com/sendLocation
+- Image:
+        front-end-xss.png
+- Resolution:
+        Sanitizing user data before the insertion into the database
+
+2. SQL Injection
+- Location:
+        ...com/checkins.json
+- Severity: ****
+        It allows access to all the checkins ever created on the app, thus entirely
+        voiding user privacy. I gave this one less star, severity wise, than XSS
+        because this was information that was already available throught the 
+        /sendLocation API
+- How did I find it?
+        Executing the following GET request:
+        http://vast-basin-33477.herokuapp.com/checkins.json?login[$gt]=
+- Image:
+        SQL-injection.png
+- Resolution:
+        Once again, sanitizing user data before querying the database.
+
+3. Access to mongo database:
+- Location: 
+        index.js
+- Severity: ***
+        It allows anyone with the original source code to directly access the
+        mongolab server as the username and password were just commented out
+        at the top of the index.js file.
+- How did I find it?
+        Doing a code review of the server side index.js file
+- Image:
