@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+        <head>
+                <link rel="stylesheet" href="style.css" type="text/css">
+                <title>Security Assessment</title>
+        </head>
+        <body>
+                <div id="header">
+                        <h1>Security Assessment</h1>
+                        <h1><a href="http://vast-basin-33477.herokuapp.com">vast-basin-33477.herokuapp.com</a></h1>
+                        <hr>
+                </div>
+                <div class="vulnerability">
+                        <h3 class="vuln_header">Introduction</h3>
+                        <p>The following report was prepared by <a href="http://adityahurry.github.io">Aditya Hurry</a>, as an assessment of Shreenath Bhanderi's <a href="http://vast-basin-33477.herokuapp.com">assignment 2 and 3</a> for Comp20. The assignment was to build a web app that, after detecting a user's location, could show all the historic locations within a 1 mile radius of the user. The server side was implemented using a nodejs server with a MongoDB database. The front end was implemented using the google maps API, after requesting the data from the API exposed by the herokuapp instance.</p>
+                </div>
+                <div class="vulnerability">
+                        <h3 class="vuln_header">Methodology</h3>
+                        <p>The testing was carried out in two phases: (1) Black Box testing and (2) with access to the server side source code. The tools used were simple HTTP curl requests with 'bad' input, as well as malformed query strings using simple get requests. All parts of the API were tested using both tools.</p>
+                </div>
+                <hr id="dashed">
+                <div class="vulnerability">
+                        <h3 class="vuln_header">XSS - Cross Site Scripting</h3>
+                        <h3 class="vuln_subheading">Location:</h3>
+                        <div class="code_wrapper">
+                                <code>http://vast-basin-33477.herokuapp.com/<a class="embolden">sendLocation</a></code>
+                        </div>
+                        <h3 class="vuln_subheading">Severity: *****</h3>
+                        <p>This is a biggie. The vulnerability to XSS throught the /sendLocation API can render the website unusable as it corrupts the database and can inject javascript into the front end of the website</p>
+                        <h3 class="vuln_subheading">How was it found?</h3>
+                        <p>Sending the following as a curl request:</p>
+                        <div class="code_wrapper">
+                                <code id="curl_request"><<a class="script_tag">script</a>><a class="url">document.body.style.backgroundColor</a><a class="script_tag">=</a><a class="q">'red'</a>;<a class="url">document.body.innerHTML</a><a class="script_tag">=</a><a class="q">'</a><a class="q"><</a><a class="q">h1>HACKED<</a><a class="q">/h1>'</a>;<<a class="script_tag">/script</a>>&lat=0&lng=0"</code>
+                        </div>
+
+                </div>
+        </body>
+</html>
+
