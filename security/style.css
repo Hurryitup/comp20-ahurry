@@ -4,6 +4,15 @@ body {
         font-family: "Courier New";
 }
 
+img {
+        width:90%;
+        /*height:10%;*/
+}
+
+.img_wrapper {
+        text-align: center;
+}
+
 h1 {
         font-size: 26px;
         text-align: center;

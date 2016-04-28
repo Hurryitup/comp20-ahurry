@@ -18,7 +18,7 @@
                         <h3 class="vuln_header">Methodology</h3>
                         <p>The testing was carried out in two phases: (1) Black Box testing and (2) with access to the server side source code. The tools used were simple HTTP curl requests with 'bad' input, as well as malformed query strings using simple get requests. All parts of the API were tested using both tools.</p>
                 </div>
-                <hr id="dashed">
+                <hr>
                 <div class="vulnerability">
                         <h3 class="vuln_header">XSS - Cross Site Scripting</h3>
                         <h3 class="vuln_subheading">Location:</h3>
@@ -26,13 +26,51 @@
                                 <code>http://vast-basin-33477.herokuapp.com/<a class="embolden">sendLocation</a></code>
                         </div>
                         <h3 class="vuln_subheading">Severity: *****</h3>
-                        <p>This is a biggie. The vulnerability to XSS throught the /sendLocation API can render the website unusable as it corrupts the database and can inject javascript into the front end of the website</p>
+                        <p>This is a biggie. The vulnerability to XSS throught the /sendLocation API can render the website unusable as it corrupts the database and can inject javascript into the front end of the website.</p>
                         <h3 class="vuln_subheading">How was it found?</h3>
                         <p>Sending the following as a curl request:</p>
                         <div class="code_wrapper">
                                 <code id="curl_request"><<a class="script_tag">script</a>><a class="url">document.body.style.backgroundColor</a><a class="script_tag">=</a><a class="q">'red'</a>;<a class="url">document.body.innerHTML</a><a class="script_tag">=</a><a class="q">'</a><a class="q"><</a><a class="q">h1>HACKED<</a><a class="q">/h1>'</a>;<<a class="script_tag">/script</a>>&lat=0&lng=0"</code>
                         </div>
-
+                        <h3 class="vuln_subheading">What happened when I did that?</h3>
+                        <div class="img_wrapper"><img src="front-end-xss.png" alt="front-end-xss"></div>
+                        <h3 class="vuln_subheading">How does one prevent that?</h3>
+                        <div class="code_wrapper"><code>!!~~NEVER TRUST USER DATA~~!!</code></div>
+                        <p>Sanitizing user data on the client side before it gets sent to the server would fix this problem. Special characters, including but not limited to <, >, ", $ should be removed before the request is sent.</p>
+                </div>
+                <hr>
+                <div class="vulnerability">
+                        <h3 class="vuln_header">SQL Injection (kind of?)</h3>
+                        <h3 class="vuln_subheading">Location:</h3>
+                        <div class="code_wrapper">
+                                <code>http://vast-basin-33477.herokuapp.com/<a class="embolden">checkins.json</a></code>
+                        </div>
+                        <h3 class="vuln_subheading">Severity: ****</h3>
+                        <p>It allows access to all the checkins ever created on the app, thus entirely voiding user privacy. I gave this one less star, severity wise, than XSS because this was information that was already available through the /sendLocation API. Note: I know this doesn't technically qualify as a "SQL" injection because mongo databases aren't SQL databases. This kind of vulnerability smells like a SQL injection, which is why I named it as such - it unnecessarily exposes the database, which is what I understand a SQL Injection to be.</p>
+                        <h3 class="vuln_subheading">How was it found?</h3>
+                        <p>Executing the following GET request:</p>
+                        <div class="code_wrapper">
+                                <code>http://vast-basin-33477.herokuapp.com/checkins.json?login[$gt]=</code>
+                        </div>
+                        <h3 class="vuln_subheading">What happened when I did that?</h3>
+                        <div class="img_wrapper"><img src="SQL-injection.png" alt="sql-injection"></div>
+                        <h3 class="vuln_subheading">How does one prevent that?</h3>
+                        <div class="code_wrapper"><code>!!~~NEVER TRUST USER DATA~~!!</code></div>
+                        <p>Surprise, suprise (!!) - it's those pesky users again! Validating that the query sent with the GET request is just a string (in this case) and not stringified JSON would do the trick. The above GET request translates in mongolese to be the query db.find("login":{"$gt":}), which, because every record matches, returns all the records in the collection.</p>
+                </div>
+                <hr>
+                <div class="vulnerability">
+                        <h3 class="vuln_header">Exposed authentication for mongo database</h3>
+                        <h3 class="vuln_subheading">Location:</h3>
+                        <div class="img_wrapper"><img src="auth_exposed.png" alt="auth-exposed"></div>
+                        <h3 class="vuln_subheading">How does one prevent that?</h3>
+                        <p>Clean up your code before it's released into the production environment. While this information was only available to someone who has access to the source code, if this project were ever to be made open source, the entire database is then compromised, instead of access only being granted to it through the additional security layer of the [insert choice of server side framework].</p>
+                </div>
+                <hr>
+                <div class="vulnerability">
+                        <h3 class="vuln_header">Conclusion</h3>
+                        <p>The issues with the Landmarks server makes the entire app impossible to use - however, they're all easy fixes. There is the inherent flaw that all user data is exposed through the sendLocation API, however that can be fixed by restructuring the API so that only the submitting user's past information is returned with a request. The ability to get all the user data for the front end specification of showing everyone's location on the map could be another part of the API, with login names obfuscated or randomly assigned to protect users' identities.</p>
+                <div>
                 </div>
         </body>
 </html>
